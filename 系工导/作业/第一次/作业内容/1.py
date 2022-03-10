@@ -14,12 +14,27 @@ def load():
 
 
 # 移动平均法
-def MA():
-    return
+def MA(y, N):
+    ans = np.convolve(y, np.ones(N) / N)
+    sum = 0
+    for i in range(N):
+        sum += y[i]
+        ans[i] = sum / (i + 1)
+    return ans[0:len(y)]
 
 
 # 指数平均法
-def EMA():
+def EMA(y, alpha):
+    ans = [0] * len(y)
+    ans[0] = y[0]
+    y_hat = ans[0]
+    for i in range(1, len(y)):
+        ans[i] = alpha * y[i] + (1 - alpha) * y_hat
+        y_hat = ans[i]
+    return ans
+
+
+def ARIMA():
     return
 
 
@@ -37,3 +52,14 @@ def draw(x, y):
 if __name__ == '__main__':
     x, y = load()
     draw(x, y)
+
+    # 使用移动平均法后绘图
+    new_y = MA(y, 5)
+    draw(x, new_y)
+
+    new_y = MA(y, 30)
+    draw(x, new_y)
+
+    # 使用指数平均法后绘图
+    new_y = EMA(y, 0.2)
+    draw(x, new_y)
