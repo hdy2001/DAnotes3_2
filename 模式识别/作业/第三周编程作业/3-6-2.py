@@ -4,8 +4,7 @@ from sklearn.model_selection import KFold, cross_val_score
 from sklearn.linear_model import LogisticRegression
 
 # 读取并对数据进行分类
-datas = pd.read_csv('/Users/don/Desktop/DAnotes3_2/模式识别/作业/第三周编程作业/new.txt',
-                    sep=' ')
+datas = pd.read_csv('new.txt',sep=' ')
 Y = datas.iloc[:, 5]
 X = datas.iloc[:, 0:5]
 
@@ -15,11 +14,11 @@ def mean(myX):
 
 
 def S(myX):
-    return np.stack([
-        np.matmul((item - mean(myX)).reshape(5, 1),
-                  (item - mean(myX)).reshape(1, 5)) for item in myX
-    ]).sum(axis=0)
-    # return np.dot((myX - mean(myX)).T, (myX - mean(myX)))
+    # return np.stack([
+    #     np.matmul((item - mean(myX)).reshape(5, 1),
+    #               (item - mean(myX)).reshape(1, 5)) for item in myX
+    # ]).sum(axis=0)
+    return np.dot((myX - mean(myX)).T, (myX - mean(myX)))
 
 
 # 算系数有一点问题
@@ -51,9 +50,11 @@ for train_index, test_index in kf.split(datas):
     X_1 = data_1.iloc[:, 0:5]
     Y_2 = data_2.iloc[:, 5]
     X_2 = data_2.iloc[:, 0:5]
-    omega = omega_n(X_1, X_2)
+    omega = omega_n(X_1, X_2)*25
     omega_ = omega_0(Y_1, Y_2)
     predicts = np.dot(x_test, omega) + omega_
     predicts = (predicts > 0).reshape(-1)
     acc.append(float(np.sum(predicts == y_test)) / float(len(predicts)))
+
 print(acc)
+print(np.mean(np.array(acc)))
